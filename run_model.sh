@@ -1,7 +1,6 @@
 #!/bin/bash
 
 MODEL_LIST="models.txt"
-PORT=8000
 INPUT_FILE="base.json"
 
 if [ ! -f "$MODEL_LIST" ]; then
@@ -22,23 +21,8 @@ while IFS= read -r MODEL; do
     echo "Input file:   $INPUT_FILE"
     echo "===================================="
 
-    # Start vLLM server
-    python -m vllm.entrypoints.openai.api_server \
-        --model "$MODEL" \
-        --port $PORT &
-
-    SERVER_PID=$!
-    echo "Server PID = $SERVER_PID"
-
-    echo "Waiting for server..."
-    sleep 8
-
     echo "Querying model..."
-    python chat.py "$MODEL" "$INPUT_FILE" "$PORT"
-
-    echo "Stopping vLLM server..."
-    kill $SERVER_PID
-    sleep 3
+    python chat.py "$MODEL" "$INPUT_FILE"
 
     echo "Done with $MODEL"
     echo

@@ -1,0 +1,7 @@
+curl -fsSL https://ollama.com/install.sh | sh
+pip install ollama
+ollama pull gemma3:4b
+ollama pull llama3.1:8b
+ollama pull mistral:7b
+ollama pull qwen3:8b
+ollama pull deepseek-llm:7b

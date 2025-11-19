@@ -2,17 +2,17 @@ import openai
 import json
 import sys
 from tqdm import tqdm
-from datasets import load_dataset
+from ollama import chat
+from ollama import ChatResponse
 
 
 
-def call_llm(model_name, port, query):
-    openai.api_base = f"http://localhost:{port}/v1"
-    resp = openai.ChatCompletion.create(
-        model=model_name,
-        messages=[{"role": "user", "content": query}],
-    )
-    return resp["choices"][0]["message"]["content"]
+def call_llm(model_name, query):
+    response: ChatResponse = chat(model=model_name, messages=[{
+        'role': 'user',
+        'content': query,
+    }])
+    return response['message']['content']
 
 def load_queries(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -26,15 +26,14 @@ def save_results(path, results):
 def main():
     MODEL_NAME = sys.argv[1]
     INPUT_FILE = sys.argv[2]
-    PORT = sys.argv[3]
 
-    OUTPUT_FILE = f"{INPUT_FILE.rsplit('.', 1)[0]}_{MODEL_NAME}_{MODEL_NAME.rsplit('/', 1)[-1]}.json"
+    OUTPUT_FILE = f"{INPUT_FILE.rsplit('.', 1)[0]}_{MODEL_NAME}_{MODEL_NAME.replace(':', '')}.json"
 
     queries = load_queries(INPUT_FILE)
     results = []   
 
     for item in tqdm(queries):
-        answer = call_llm(MODEL_NAME, PORT, item["query"])
+        answer = call_llm(MODEL_NAME, item["query"])
         results.append({
             "id": item["id"],
             "query": item["query"],
