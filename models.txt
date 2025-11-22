@@ -3,3 +3,4 @@ mistral:7b
 qwen3:8b
 deepseek-llm:7b
 gemma3:4b
+tinyllama:1.1b

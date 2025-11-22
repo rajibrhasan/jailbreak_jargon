@@ -1,2 +1,5 @@
 tools.py
 jargonize.py
+.env
+files/
+judge_responses_all.json
